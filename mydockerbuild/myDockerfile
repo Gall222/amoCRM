@@ -1,0 +1,29 @@
+# Используем образ php 7.1
+FROM php:7.1-apache
+
+# копируем файлы из source в папку www в контейнере
+COPY . /www
+
+# Устанавливаем библиотеки (Пример)
+RUN apt-get update && \
+    apt-get install -y \
+    sqlite3 sqlite3 \
+    && apt-get clean
+	apt-get -y update && apt-get install -y fortunes
+
+# Устанавливаем расширения php (Пример)
+RUN docker-php-ext-install \
+    pdo_sqlite \
+
+
+# Устанавливаем Composer в папку контейнера /usr/local/bin
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN echo "" >> ~/.bashrc && \
+    echo 'export PATH="/var/www/vendor/bin:$PATH"' >> ~/.bashrc
+
+# устанавливаем рабочую директорию
+WORKDIR /var/www
+
+# По каким портам будет доступен контейнер
+EXPOSE 80
+ 5.  Создаем docker-compose.yml
